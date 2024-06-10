@@ -34,7 +34,10 @@ def get_user() -> Union[dict, None]:
 
     try:
         login_as = request.args.get("login_as")
-        user = users[int(login_as)]
+        if login_as:
+            user = users[int(login_as)]
+        else:
+            user = None
     except Exception:
         user = None
 
@@ -60,6 +63,8 @@ def get_locale() -> str:
     locale = request.args.get("locale")
     if locale and locale in app.config['LANGUAGES']:
         return locale
+    if g.user and g.user.get('locale') in app.config['LANGUAGES']:
+        return g.user['locale']
     return request.accept_languages.best_match(app.config['LANGUAGES'])
 
 
